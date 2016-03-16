@@ -8,7 +8,7 @@ CREATE FUNCTION process_relations() RETURNS trigger AS $process_relations$
         SELECT ancestor_id, NEW.id
         FROM comments_relations
         WHERE descendant_id = NEW.parent_id
-        UNION ALL SELECT NEW.id, NEW,id;
+        UNION ALL SELECT NEW.id, NEW.id;
 
         RETURN NEW;
     END;

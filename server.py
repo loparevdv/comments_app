@@ -34,7 +34,7 @@ class Comment(object):
         connection = await aiopg.connect(**DB_ARGS)
         cursor = await connection.cursor()
 
-        await cursor.execute("SELECT * FROM comment WHERE id=%s" % comment_id)
+        await cursor.execute('SELECT * FROM comment WHERE id=%s' % comment_id)
         return await cursor.fetchall()
 
     @classmethod
@@ -50,8 +50,24 @@ class Comment(object):
         await cursor.execute(query % root_id)
         return await cursor.fetchall()
 
-    def create(cls):
-        pass
+    @classmethod
+    async def create(cls, parent_id, text):
+        connection = await aiopg.connect(**DB_ARGS)
+        cursor = await connection.cursor()
+
+        if int(parent_id):
+            query = 'INSERT INTO comment (parent_id, comment_text) VALUES (%s, %s)'
+            await cursor.execute(query % (parent_id, text))
+        else:
+            query = 'INSERT INTO comment (comment_text) VALUES (%s)'
+            await cursor.execute(query % (text))
+
+        return await cursor.fetchall()
+
+    @classmethod
+    async def get_descendants_count(cls):
+        connection = await aiopg.connect(**DB_ARGS)
+        cursor = await connection.cursor()
 
     def update(cls):
         pass
@@ -77,10 +93,21 @@ async def branch(request):
     data = str(res).encode('utf-8')
     return web.Response(body=data)
 
+async def create(request):
+    post = await request.post()
+    res = await Comment.create(post['parent_id'], post['comment_text'])
+    data = str(res).encode('utf-8')
+    return web.Response(body=data)
+
+async def delete(request):
+    # REQ - only comments without descendants can be deleted
+    root_id = request.match_info['root_id']
+
 
 app = web.Application()
 app.router.add_route('GET', '/', index)
 app.router.add_route('GET', '/{comment_id}/', comment)
+app.router.add_route('POST', '/create/', create)
 app.router.add_route('GET', '/branch/{root_id}/', branch)
 
 web.run_app(app)
