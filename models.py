@@ -70,3 +70,13 @@ class Comment(object):
         cur = await request.pool.cursor()
         await cur.execute(query, (root_content_type, root_id))
         return await cur.fetchall()
+
+    @classmethod
+    async def get_entity_comments(cls, request, root_content_type, root_id, page):
+        query = 'SELECT id, parent_id, comment_text, created, modified \
+        FROM comment WHERE root_content_type = %s AND root_id = %s \
+        LIMIT 10 OFFSET %s;'
+
+        cur = await request.pool.cursor()
+        await cur.execute(query, (root_content_type, root_id, (int(page)-1)*10))
+        return await cur.fetchall()
