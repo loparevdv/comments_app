@@ -8,7 +8,7 @@ from models import Comment
 
 async def comment(request):
     comment_id = request.match_info['comment_id']
-    res = await Comment.get(comment_id)
+    res = await Comment.get(request, comment_id)
     return web.Response(body=str(res).encode('utf-8'))
 
 async def branch(request):
