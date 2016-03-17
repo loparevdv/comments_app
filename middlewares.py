@@ -13,8 +13,6 @@ async def middleware_factory(app, handler):
         dsn = 'dbname=comment_app user=postgres password=postgres host=localhost port=5432'
         pool = await aiopg.create_pool(dsn)
         request.pool = await pool.acquire()
-        # request.cursor = await pool.cursor()
-        # request.cursor = await connection
         return await handler(request)
 
     return middleware_handler
