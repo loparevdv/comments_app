@@ -10,13 +10,13 @@ class Comment(object):
         return await cur.fetchall()
 
     @classmethod
-    async def create(cls, request, parent_id, text):
+    async def create(cls, request, user_id, parent_id, text):
         if int(parent_id):
-            query = 'INSERT INTO comment (parent_id, comment_text) VALUES (%s, %s)'
-            args = (parent_id, text)
+            query = 'INSERT INTO comment (user_id, parent_id, comment_text) VALUES (%s, %s, %s)'
+            args = (user_id, parent_id, text)
         else:
-            query = 'INSERT INTO comment (comment_text) VALUES (%s)'
-            args = (text, )
+            query = 'INSERT INTO comment (user_id, comment_text) VALUES (%s, %s)'
+            args = (user_id, text, )
         
         cur = await request.pool.cursor()
         return await cur.execute(query, args)
@@ -37,6 +37,8 @@ class Comment(object):
 
     @classmethod
     async def _flush_relations(cls, request, comment_id):
+        # REQ - only connections without descendants can be deleted
+        # but it more generic query
         cur = await request.pool.cursor()
         query = 'DELETE FROM comments_relations WHERE ancestor_id = %d OR descendant_id = %d'
         await cur.execute(query, (int(comment_id), int(comment_id), ))
@@ -79,4 +81,13 @@ class Comment(object):
 
         cur = await request.pool.cursor()
         await cur.execute(query, (root_content_type, root_id, (int(page)-1)*10))
+        return await cur.fetchall()
+
+    @classmethod
+    async def get_user_comments(cls, request, user_id):
+        query = 'SELECT id, parent_id, comment_text, created, modified \
+        FROM comment WHERE user_id = %s;'
+
+        cur = await request.pool.cursor()
+        await cur.execute(query, (user_id, ))
         return await cur.fetchall()
