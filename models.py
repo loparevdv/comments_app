@@ -19,14 +19,18 @@ class Comment(object):
             args = (user_id, text, )
         
         cur = await request.pool.cursor()
-        return await cur.execute(query, args)
+        res = await cur.execute(query, args)
+        cur.connection.close()
+        return res
 
     @classmethod
     async def update(cls, request, comment_id, comment_text):
         cur = await request.pool.cursor()
         query = 'UPDATE comment SET comment_text = %s WHERE id = %d;'
         args = (comment_text, int(comment_id))
-        return await cur.execute(query, args)
+        res = await cur.execute(query, args)
+        cur.connection.close()
+        return res
 
     @classmethod
     async def delete(cls, request, comment_id):
@@ -78,7 +82,7 @@ class Comment(object):
         query = 'SELECT id, parent_id, comment_text, created, modified \
         FROM comment WHERE root_content_type = %s AND root_id = %s \
         LIMIT 10 OFFSET %s;'
-
+        # TODO: make 10 constant
         cur = await request.pool.cursor()
         await cur.execute(query, (root_content_type, root_id, (int(page)-1)*10))
         return await cur.fetchall()

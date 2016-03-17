@@ -45,3 +45,37 @@ $process_relations$ LANGUAGE plpgsql;
 
 CREATE TRIGGER process_relations AFTER INSERT ON comment
     FOR EACH ROW EXECUTE PROCEDURE process_relations();
+
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
+insert into sysuser (username) values ('dsaas');
