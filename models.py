@@ -4,9 +4,9 @@ class Comment(object):
 
     @classmethod
     async def get(cls, request, comment_id):
-        query = 'SELECT * FROM comment WHERE id=%s'
+        query = 'SELECT * FROM comment WHERE id = %s'
 
-        with (request.cursor) as cur:
+        async with (request.pool.cursor()) as cur:
             await cur.execute(query % (comment_id, ))
             return await cur.fetchall()
 
@@ -18,7 +18,7 @@ class Comment(object):
                  ON comments_relations.descendant_id = comment.id \
                  WHERE ancestor_id= %s'
 
-        with (request.cursor) as cur:
+        async with (request.pool.cursor()) as cur:
             await cur.execute(query % (root_id, ))
             return await cur.fetchall()
 
@@ -32,16 +32,36 @@ class Comment(object):
             query = 'INSERT INTO comment (comment_text) VALUES (%s)'
             args = (text, )
         
-        with (request.cursor) as cur:
+        async with (request.pool.cursor()) as cur:
             return await cur.execute(query % args)
 
     @classmethod
     async def update(cls, request, comment_id, comment_text):
-        query = 'update comment set comment_text = %s where id = %d;'
-        args = (comment_text, int(comment_id))
-
-        with (request.cursor) as cur:
+        async with (request.pool.cursor()) as cur:
+            query = 'UPDATE comment SET comment_text = %s WHERE id = %d;'
+            args = (comment_text, int(comment_id))
             return await cur.execute(query % args)
 
-    def delete(cls):
-        pass
+    @classmethod
+    async def get_descendants_count(cls, request, comment_id):
+        async with (request.pool.cursor()) as cur:
+            query = 'SELECT count(*) FROM comments_relations WHERE ancestor_id = %d;'
+            await cur.execute(query % (int(comment_id), ))
+            res = await cur.fetchone()
+            return res
+
+    @classmethod
+    async def _flush_relations(cls, request, comment_id):
+        async with (request.pool.cursor()) as cur:
+            query = 'DELETE FROM comments_relations WHERE ancestor_id = %d OR descendant_id = %d'
+            await cur.execute(query % (int(comment_id), int(comment_id), ))
+            res = cur.fetchone()
+            return res
+
+    @classmethod
+    async def delete(cls, request, comment_id):
+        await cls._flush_relations(request, comment_id)
+
+        async with (request.pool.cursor()) as cur:
+            query = 'DELETE FROM comment WHERE id = %d'
+            return await cur.execute(query % (int(comment_id), ))
