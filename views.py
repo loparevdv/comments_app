@@ -3,7 +3,7 @@ from aiohttp import web
 import xml_report
 from models import Comment
 
-#TODO: maybe instantiatable class should be implemented to provide and manage database connection
+# TODO: maybe instantiatable class should be implemented to provide and manage database connection
 
 reporting_methods = {
     'xml': xml_report.get_xml,
@@ -90,8 +90,9 @@ class APIHandler:
             'dt_end': dt_end,
         }
 
-        # TODO: get file opening type from f
-        report_filename = '%s_%s_%s.xml' % (user_id, dt_start.split('+')[0].replace(':', '_'), dt_end.split('+')[0].replace(':', '_'))
+        report_filename = '%s_%s_%s.xml' % (user_id,
+                                            dt_start.split('+')[0].replace(':', '_'),
+                                            dt_end.split('+')[0].replace(':', '_'))
         try:
             f = open(report_filename, 'r')
         except FileNotFoundError:

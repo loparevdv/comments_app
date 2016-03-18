@@ -5,7 +5,8 @@ DB_ARGS = {
     'database': 'comment_app',
     'user': 'postgres',
     'password': 'postgres',
-    'host': '127.0.0.1'
+    'host': '127.0.0.1',
+    'port': '5432',
 }
 
 async def middleware_factory(app, handler):

@@ -1,9 +1,13 @@
 # comments_app
 
-clojure table + adjacency list mix schema used.
-through disk overhead this schema allows perform main (CRUD and get branch) operations extremely quick.
+Clojure Table + Adjacency List mix schema used.
+Through some disk overhead this schema allows perform main (CRUD and get branch) operations extremely quick.
 
-clojure table consistency provided by database trigger. postgresql should be used.
+Clojure Table consistency provided by database trigger. 
+
+postgresql should be used.
+
+
 
 1. install dependencies ```pip install -r pip req```
 2. init database using ```utils/db_init.sql``` script
@@ -20,6 +24,8 @@ Tech debts
 1. override default 500 handler
 2. unittests (or may be functional via curl)
 3. check for database keys, indexes etc
+4. incode TODOs
 
 TODO:
-2. pubsub interface
+
+1. pubsub interface

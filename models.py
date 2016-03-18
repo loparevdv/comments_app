@@ -1,5 +1,6 @@
 # WOW NO IMPORTS
 
+
 class Comment(object):
     # TODO: think about to make it insantiable to store cursor and autoclose connection
     # TODO: at least propagate connection closing for defence programming sake!
@@ -19,7 +20,7 @@ class Comment(object):
         else:
             query = 'INSERT INTO comment (user_id, comment_text) VALUES (%s, %s)'
             args = (user_id, text, )
-        
+
         cur = await request.pool.cursor()
         res = await cur.execute(query, args)
         cur.connection.close()
@@ -44,7 +45,7 @@ class Comment(object):
     @classmethod
     async def _flush_relations(cls, request, comment_id):
         # REQ - only connections without descendants can be deleted
-        # but it more generic query
+        # but this query is more generic
         cur = await request.pool.cursor()
         query = 'DELETE FROM comments_relations WHERE ancestor_id = %d OR descendant_id = %d'
         await cur.execute(query, (int(comment_id), int(comment_id), ))
@@ -59,6 +60,7 @@ class Comment(object):
 
     @classmethod
     async def get_thread(cls, request, root_id):
+        # getting whole thread in ONE QUERY.
         query = 'SELECT id, parent_id, comment_text, created, modified \
                  FROM comments_relations JOIN comment \
                  ON comments_relations.descendant_id = comment.id \
@@ -73,7 +75,7 @@ class Comment(object):
         query = 'SELECT id, parent_id, comment_text, created, modified \
         FROM comments_relations JOIN comment \
         ON comments_relations.descendant_id = comment.id \
-        WHERE ancestor_id IN (SELECT id from comment where root_content_type = %s and root_id = %s);'
+        WHERE ancestor_id IN (SELECT id from comment where root_content_type=%s and root_id=%s);'
 
         cur = await request.pool.cursor()
         await cur.execute(query, (root_content_type, root_id))
@@ -107,5 +109,4 @@ class Comment(object):
             query += ' AND modified < %s'
 
         cur = await request.pool.cursor()
-        await cur.execute(query, args)
-        return await cur.fetchall()
+        return await cur.execute(query, args)
