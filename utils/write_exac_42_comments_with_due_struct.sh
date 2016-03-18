@@ -2,7 +2,7 @@
 
 # writing comments due to comment tree structure
 
-curl --data "user_id=$1&parent_id=0&comment_text=11222" localhost:8080/create/
+curl --data "user_id=$1&parent_id=0&root_content_type=1&root_id=1&comment_text=11222" localhost:8080/create/
 sleep .01
 curl --data "user_id=$1&parent_id=1&comment_text=11222" localhost:8080/create/
 sleep .01
@@ -18,7 +18,7 @@ curl --data "user_id=$1&parent_id=6&comment_text=11222" localhost:8080/create/
 sleep .01
 curl --data "user_id=$1&parent_id=6&comment_text=11222" localhost:8080/create/
 sleep .01
-curl --data "user_id=$1&parent_id=0&comment_text=11222" localhost:8080/create/
+curl --data "user_id=$1&parent_id=0&root_content_type=2&root_id=2&comment_text=11222" localhost:8080/create/
 sleep .01
 curl --data "user_id=$1&parent_id=10&comment_text=11222" localhost:8080/create/
 sleep .01
@@ -65,11 +65,11 @@ sleep .01
 curl --data "user_id=$1&parent_id=27&comment_text=11222" localhost:8080/create/
 sleep .01
 echo "30 done $1"
-curl --data "user_id=$1&parent_id=0&comment_text=11222" localhost:8080/create/
+curl --data "user_id=$1&parent_id=0&root_content_type=1&root_id=1&comment_text=11222" localhost:8080/create/
 sleep .01
-curl --data "user_id=$1&parent_id=0&comment_text=11222" localhost:8080/create/
+curl --data "user_id=$1&parent_id=0&root_content_type=1&root_id=1&comment_text=11222" localhost:8080/create/
 sleep .01
-curl --data "user_id=$1&parent_id=0&comment_text=11222" localhost:8080/create/
+curl --data "user_id=$1&parent_id=0&root_content_type=1&root_id=1&comment_text=11222" localhost:8080/create/
 sleep .01
 curl --data "user_id=$1&parent_id=31&comment_text=11222" localhost:8080/create/
 sleep .01

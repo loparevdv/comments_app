@@ -1,6 +1,8 @@
 # WOW NO IMPORTS
 
 class Comment(object):
+    # TODO: think about to make it insantiable to store cursor and autoclose connection
+    # TODO: at least propagate connection closing for defence programming sake!
 
     @classmethod
     async def get(cls, request, comment_id):
@@ -10,7 +12,7 @@ class Comment(object):
         return await cur.fetchall()
 
     @classmethod
-    async def create(cls, request, user_id, parent_id, text):
+    async def create(cls, request, user_id, parent_id, text, **kwargs):
         if int(parent_id):
             query = 'INSERT INTO comment (user_id, parent_id, comment_text) VALUES (%s, %s, %s)'
             args = (user_id, parent_id, text)
@@ -82,16 +84,28 @@ class Comment(object):
         query = 'SELECT id, parent_id, comment_text, created, modified \
         FROM comment WHERE root_content_type = %s AND root_id = %s \
         LIMIT 10 OFFSET %s;'
-        # TODO: make 10 constant
+        # TODO: make 10 setting constant
         cur = await request.pool.cursor()
         await cur.execute(query, (root_content_type, root_id, (int(page)-1)*10))
         return await cur.fetchall()
 
     @classmethod
-    async def get_user_comments(cls, request, user_id):
-        query = 'SELECT id, parent_id, comment_text, created, modified \
-        FROM comment WHERE user_id = %s;'
+    async def get_user_comments(cls, request, user_id, **kwargs):
+        query = 'SELECT id, parent_id, user_id, comment_text, created, modified \
+        FROM comment WHERE user_id = %s '
+
+        dt_start = kwargs.get('dt_start')
+        dt_end = kwargs.get('dt_end')
+        args = [user_id]
+
+        if dt_start:
+            args.append(dt_start)
+            query += ' AND modified > %s'
+
+        if dt_end:
+            args.append(dt_end)
+            query += ' AND modified < %s'
 
         cur = await request.pool.cursor()
-        await cur.execute(query, (user_id, ))
+        await cur.execute(query, args)
         return await cur.fetchall()

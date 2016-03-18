@@ -1,5 +1,6 @@
 import aiopg
 
+# TODO: make dsn from this dict, move dict to settings.py
 DB_ARGS = {
     'database': 'comment_app',
     'user': 'postgres',
