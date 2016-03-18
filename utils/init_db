@@ -6,5 +6,4 @@ UPDATE comment
 SET root_content_type=NULL, root_id=NULL
 WHERE id > 8 and id < 31;
 
-
 select user_id, count(comment)from comment join sysuser on comment.user_id = sysuser.id group by user_id order by user_id;

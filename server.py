@@ -16,9 +16,9 @@ app.router.add_route('GET', '/branch/{root_id}/', views.branch)
 app.router.add_route('GET', '/ent_comments/{root_content_type}/{root_id}/page/{page}/', views.ent_comments)
 app.router.add_route('GET', '/ent_branch/{root_content_type}/{root_id}/', views.ent_branch)
 app.router.add_route('GET', '/user/{user_id}/', views.by_user)
-
 # NB: http://localhost:8080/report/1/2016-03-18T00:01:00+00:00/2016-03-18T16:17:57+00:00/
 app.router.add_route('GET', '/report/{user_id}/{dt_start}/{dt_end}/', views.get_report_by_user)
+app.router.add_route('GET', '/report/{user_id}/', views.get_report_by_user)
 
 # uncomment to run without gunicorn
 # web.run_app(app)
